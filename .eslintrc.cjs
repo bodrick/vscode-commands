@@ -36,6 +36,15 @@ module.exports = {
         type: 'natural'
       }
     ],
+    'unicorn/filename-case': [
+      'error',
+      {
+        cases: {
+          camelCase: true,
+          pascalCase: true
+        }
+      }
+    ],
     'unicorn/no-process-exit': 'off'
   }
 };
