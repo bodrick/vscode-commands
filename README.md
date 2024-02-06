@@ -104,44 +104,47 @@
 
 ![status_bar](img/status_bar.gif)
 
-
 <!-- COMMANDS_START -->
+
 ## Commands (10)
 
-|Command|Description|
-|-|-|
-|commands.openAsQuickPick|Commands: Open as Quick Pick|
-|commands.selectAndRun|Commands: Select and run command|
-|commands.rerun|Commands: Rerun last command|
-|commands.suggestCommands|Commands: Suggest (autocomplete) commands|
-|commands.suggestCodicons|Commands: Suggest [Codicons](https://code.visualstudio.com/api/references/icons-in-labels)|
-|commands.suggestVariables|Commands: Suggest variables that are supported by this extension's variable substitutions, e.g: `${workspaceFolderBasename}`. [📚 Docs](https://github.com/usernamehw/vscode-commands/blob/master/docs/documentation.md#variable-substitution)|
-|commands.suggestSettings|Commands: Suggest setting ids (user & workspace).|
-|commands.suggestColors|Commands: Suggest theme color ids [theme-color](https://code.visualstudio.com/api/references/theme-color).|
-|commands.newCommand|Commands: Add new command to the list|
-|commands.escapeCommandUriArgument|Commands: Escape command uri argument|
+| Command                           | Description                                                                                                                                                                                                                                    |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| commands.openAsQuickPick          | Commands: Open as Quick Pick                                                                                                                                                                                                                   |
+| commands.selectAndRun             | Commands: Select and run command                                                                                                                                                                                                               |
+| commands.rerun                    | Commands: Rerun last command                                                                                                                                                                                                                   |
+| commands.suggestCommands          | Commands: Suggest (autocomplete) commands                                                                                                                                                                                                      |
+| commands.suggestCodicons          | Commands: Suggest [Codicons](https://code.visualstudio.com/api/references/icons-in-labels)                                                                                                                                                     |
+| commands.suggestVariables         | Commands: Suggest variables that are supported by this extension's variable substitutions, e.g: `${workspaceFolderBasename}`. [📚 Docs](https://github.com/usernamehw/vscode-commands/blob/master/docs/documentation.md#variable-substitution) |
+| commands.suggestSettings          | Commands: Suggest setting ids (user & workspace).                                                                                                                                                                                              |
+| commands.suggestColors            | Commands: Suggest theme color ids [theme-color](https://code.visualstudio.com/api/references/theme-color).                                                                                                                                     |
+| commands.newCommand               | Commands: Add new command to the list                                                                                                                                                                                                          |
+| commands.escapeCommandUriArgument | Commands: Escape command uri argument                                                                                                                                                                                                          |
+
 <!-- COMMANDS_END -->
 
 <!-- SETTINGS_START -->
+
 ## Settings (15)
 
-|Setting|Default|Description|
-|-|-|-|
-|commands.commands|\{\}|Main extension property. Commands that will be rendered in the View.|
-|commands.workspaceCommands|\{\}|Commands that will be rendered in the View, specific to the workspace.|
-|commands.alias|\{\}|Use shorter command ids. Extension registers aliased commands so that they can be also used in keybindings.|
-|commands.showKeybindings|**false**|Whether or not to show keyboard shortcuts assigned to command contributed by user. (Currently only displayed in Tree View).|
-|commands.treeViewCollapseFolders|**false**|Collapse folders by default. Requires reload before being applied.|
-|commands.treeViewStatusBarVisibleSymbol|"💠"|Symbol used in the tree view to indicate that command is also visible in the status bar.|
-|commands.treeViewWorkspaceCommandSymbol|"🎯"|Symbol used in the tree view to indicate workspace command (from `#commands.workspaceCommands#`) setting.|
-|commands.statusBarDefaultText|"same"|Controls the text of Status Bar item when adding from Tree View context menu.|
-|commands.statusBarDefaultPosition|"left"|Where to put command on Status Bar (left or right).|
-|commands.quickPickIncludeAllCommands|**false**|When checked - include all commands from Command Palette to the Quick Pick.|
-|commands.populateCommandPalette|**false**|Adds all items to Command Palette (Requires editor reload after every change of main config `#commands.commands#`).|
-|commands.documentLinksEnabled|**false**|Run commands as links in documents. Links have format `@command?args@`.<br>[issues/2](https://github.com/usernamehw/vscode-commands/issues/2)|
-|commands.documentLinksPattern|""|[Glob](https://code.visualstudio.com/api/references/vscode-api#GlobPattern) for `#commands.documentLinksEnabled#`. Example: `**/*.{ts,js}` - only enable in TypeScript & JavaScript files.|
-|commands.variableSubstitutionEnabled|**true**|Allow `"args"` to replace variables: [📚 Docs](https://github.com/usernamehw/vscode-commands/blob/master/docs/documentation.md#variable-substitution).|
-|commands.toggleSettings.showNotification|**false**|When enabled - show notification after using `commands.toggleSetting` or `commands.incrementSetting`.|
+| Setting                                  | Default   | Description                                                                                                                                                                                |
+| ---------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| commands.commands                        | \{\}      | Main extension property. Commands that will be rendered in the View.                                                                                                                       |
+| commands.workspaceCommands               | \{\}      | Commands that will be rendered in the View, specific to the workspace.                                                                                                                     |
+| commands.alias                           | \{\}      | Use shorter command ids. Extension registers aliased commands so that they can be also used in keybindings.                                                                                |
+| commands.showKeybindings                 | **false** | Whether or not to show keyboard shortcuts assigned to command contributed by user. (Currently only displayed in Tree View).                                                                |
+| commands.treeViewCollapseFolders         | **false** | Collapse folders by default. Requires reload before being applied.                                                                                                                         |
+| commands.treeViewStatusBarVisibleSymbol  | "💠"      | Symbol used in the tree view to indicate that command is also visible in the status bar.                                                                                                   |
+| commands.treeViewWorkspaceCommandSymbol  | "🎯"      | Symbol used in the tree view to indicate workspace command (from `#commands.workspaceCommands#`) setting.                                                                                  |
+| commands.statusBarDefaultText            | "same"    | Controls the text of Status Bar item when adding from Tree View context menu.                                                                                                              |
+| commands.statusBarDefaultPosition        | "left"    | Where to put command on Status Bar (left or right).                                                                                                                                        |
+| commands.quickPickIncludeAllCommands     | **false** | When checked - include all commands from Command Palette to the Quick Pick.                                                                                                                |
+| commands.populateCommandPalette          | **false** | Adds all items to Command Palette (Requires editor reload after every change of main config `#commands.commands#`).                                                                        |
+| commands.documentLinksEnabled            | **false** | Run commands as links in documents. Links have format `@command?args@`.<br>[issues/2](https://github.com/usernamehw/vscode-commands/issues/2)                                              |
+| commands.documentLinksPattern            | ""        | [Glob](https://code.visualstudio.com/api/references/vscode-api#GlobPattern) for `#commands.documentLinksEnabled#`. Example: `**/*.{ts,js}` - only enable in TypeScript & JavaScript files. |
+| commands.variableSubstitutionEnabled     | **true**  | Allow `"args"` to replace variables: [📚 Docs](https://github.com/usernamehw/vscode-commands/blob/master/docs/documentation.md#variable-substitution).                                     |
+| commands.toggleSettings.showNotification | **false** | When enabled - show notification after using `commands.toggleSetting` or `commands.incrementSetting`.                                                                                      |
+
 <!-- SETTINGS_END -->
 
 ```ts
@@ -158,7 +161,7 @@ interface CommandObject {
     hidden?: boolean;// Do not show this in Tree View
     inputs?: {...}[];// Objects for input variable substitution like https://code.visualstudio.com/docs/editor/variables-reference#_input-variables
 
-    sequence?: (CommandObject | string)[];// execute multipe commands
+    sequence?: (CommandObject | string)[];// execute multiple commands
 
     nestedItems: {// Transform this into folder: Group items
         [key: string]: CommandObject
@@ -348,12 +351,12 @@ Can open Quick Pick with prefilled prefix (`@...` - symbol, `view ...` - open vi
 Arguments object:
 
 - **to** A mandatory logical position value providing where to move the cursor.
-> 'left', 'right', 'up', 'down', 'prevBlankLine', 'nextBlankLine',
-> 'wrappedLineStart', 'wrappedLineEnd', 'wrappedLineColumnCenter'
-> 'wrappedLineFirstNonWhitespaceCharacter', 'wrappedLineLastNonWhitespaceCharacter'
-> 'viewPortTop', 'viewPortCenter', 'viewPortBottom', 'viewPortIfOutside'
+  > 'left', 'right', 'up', 'down', 'prevBlankLine', 'nextBlankLine',
+  > 'wrappedLineStart', 'wrappedLineEnd', 'wrappedLineColumnCenter'
+  > 'wrappedLineFirstNonWhitespaceCharacter', 'wrappedLineLastNonWhitespaceCharacter'
+  > 'viewPortTop', 'viewPortCenter', 'viewPortBottom', 'viewPortIfOutside'
 - **by** Unit to move. Default is computed based on 'to' value.
-> 'line', 'wrappedLine', 'character', 'halfLine'
+  > 'line', 'wrappedLine', 'character', 'halfLine'
 - **value** Number of units to move. Default is '1'.
 - **select** If 'true' makes the selection. Default is 'false'.
 
@@ -388,7 +391,6 @@ Arguments object:
     },
 },
 ```
-
 
 ### `moveActiveEditor` Move the active editor by tabs or groups
 
@@ -753,6 +755,7 @@ If the only purpose for a command sequence is to run it from a keybinding, then 
 ```
 
 ## [📚 More examples](https://github.com/usernamehw/vscode-commands/tree/master/docs/examples.md)
+
 ## [📚 Docs](https://github.com/usernamehw/vscode-commands/blob/master/docs/documentation.md)
 
 ## Upstream issues

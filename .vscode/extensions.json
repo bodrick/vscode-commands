@@ -1,7 +1,8 @@
 {
-    "recommendations": [
-		"dbaeumer.vscode-eslint",
-		"editorconfig.editorconfig",
-		"usernamehw.contributions"
-	]
+  "recommendations": [
+    "amodio.tsl-problem-matcher",
+    "dbaeumer.vscode-eslint",
+    "editorconfig.editorconfig",
+    "usernamehw.contributions"
+  ]
 }

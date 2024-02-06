@@ -1,416 +1,420 @@
 {
-	"name": "commands",
-	"displayName": "Commands",
-	"description": "Run one/multiple commands with arguments from Tree View / Status Bar / Quick Pick.",
-	"version": "1.13.0",
-	"publisher": "usernamehw",
-	"license": "MIT",
-	"engines": {
-		"vscode": "^1.55.0"
-	},
-	"extensionKind": [
-		"workspace",
-		"ui"
-	],
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/usernamehw/vscode-commands"
-	},
-	"icon": "img/icon.png",
-	"qna": false,
-	"bugs": {
-		"url": "https://github.com/usernamehw/vscode-commands/issues"
-	},
-	"keywords": [
-		"run",
-		"execute",
-		"multi",
-		"multiple",
-		"command",
-		"commands",
-		"args",
-		"arguments",
-		"tree view",
-		"status bar",
-		"keybinding",
-		"shortcut",
-		"macros",
-		"toggle setting",
-		"delay"
-	],
-	"categories": [
-		"Other"
-	],
-	"activationEvents": [
-		"onStartupFinished",
-		"onFileSystem:commandsExtension",
-		"onCommand:commands.run",
-		"onCommand:commands.selectAndRun",
-		"onCommand:commands.openAsQuickPick",
-		"onCommand:commands.revealCommand",
-		"onCommand:commands.assignKeybinding",
-		"onCommand:commands.addToStatusBar",
-		"onCommand:commands.suggestCommands",
-		"onCommand:commands.suggestVariables",
-		"onCommand:commands.suggestColors"
-	],
-	"main": "./dist/extension",
-	"browser": "./dist/web/extension",
-	"contributes": {
-		"configuration": {
-			"type": "object",
-			"title": "Commands",
-			"properties": {
-				"commands.commands": {
-					"type": "object",
-					"description": "Main extension property. Commands that will be rendered in the View.",
-					"scope": "application",
-					"default": {}
-				},
-				"commands.workspaceCommands": {
-					"type": "object",
-					"description": "Commands that will be rendered in the View, specific to the workspace.",
-					"scope": "window",
-					"default": {}
-				},
-				"commands.alias": {
-					"type": "object",
-					"markdownDescription": "Use shorter command ids. Extension registers aliased commands so that they can be also used in keybindings.",
-					"default": {},
-					"patternProperties": {
-						"^.*$": {
-							"type": "string"
-						}
-					},
-					"additionalProperties": false
-				},
-				"commands.showKeybindings": {
-					"type": "boolean",
-					"markdownDescription": "Whether or not to show keyboard shortcuts assigned to command contributed by user. (Currently only displayed in Tree View).",
-					"default": false
-				},
-				"commands.treeViewCollapseFolders": {
-					"type": "boolean",
-					"description": "Collapse folders by default. Requires reload before being applied.",
-					"default": false
-				},
-				"commands.treeViewStatusBarVisibleSymbol": {
-					"type": "string",
-					"markdownDescription": "Symbol used in the tree view to indicate that command is also visible in the status bar.",
-					"default": "💠"
-				},
-				"commands.treeViewWorkspaceCommandSymbol": {
-					"type": "string",
-					"markdownDescription": "Symbol used in the tree view to indicate workspace command (from `#commands.workspaceCommands#`) setting.",
-					"default": "🎯"
-				},
-				"commands.statusBarDefaultText": {
-					"type": "string",
-					"enum": [
-						"pick",
-						"same"
-					],
-					"default": "same",
-					"description": "Controls the text of Status Bar item when adding from Tree View context menu."
-				},
-				"commands.statusBarDefaultPosition": {
-					"type": "string",
-					"enum": [
-						"left",
-						"right"
-					],
-					"default": "left",
-					"description": "Where to put command on Status Bar (left or right)."
-				},
-				"commands.quickPickIncludeAllCommands": {
-					"type": "boolean",
-					"markdownDescription": "When checked - include all commands from Command Palette to the Quick Pick.",
-					"default": false
-				},
-				"commands.populateCommandPalette": {
-					"type": "boolean",
-					"markdownDescription": "Adds all items to Command Palette (Requires editor reload after every change of main config `#commands.commands#`).",
-					"default": false
-				},
-				"commands.documentLinksEnabled": {
-					"type": "boolean",
-					"markdownDescription": "Run commands as links in documents. Links have format `@command?args@`.\n\n[issues/2](https://github.com/usernamehw/vscode-commands/issues/2)",
-					"default": false
-				},
-				"commands.documentLinksPattern": {
-					"type": "string",
-					"markdownDescription": "[Glob](https://code.visualstudio.com/api/references/vscode-api#GlobPattern) for `#commands.documentLinksEnabled#`. Example: `**/*.{ts,js}` - only enable in TypeScript & JavaScript files.",
-					"default": ""
-				},
-				"commands.variableSubstitutionEnabled": {
-					"type": "boolean",
-					"markdownDescription": "Allow `\"args\"` to replace variables: [📚 Docs](https://github.com/usernamehw/vscode-commands/blob/master/docs/documentation.md#variable-substitution).",
-					"default": true
-				},
-				"commands.toggleSettings.showNotification": {
-					"type": "boolean",
-					"markdownDescription": "When enabled - show notification after using `commands.toggleSetting` or `commands.incrementSetting`.",
-					"default": false
-				}
-			}
-		},
-		"viewsContainers": {
-			"activitybar": [
-				{
-					"id": "commands",
-					"icon": "$(play-circle)",
-					"title": "Commands"
-				}
-			]
-		},
-		"views": {
-			"commands": [
-				{
-					"id": "commands.tree",
-					"name": "View"
-				}
-			]
-		},
-		"viewsWelcome": [
-			{
-				"view": "commands.tree",
-				"contents": "No commands defined in \"commands.commands\".\n\n[New Command](command:commands.newCommand)",
-				"when": "commands:emptyCommands"
-			}
-		],
-		"commands": [
-			{
-				"command": "commands.openAsQuickPick",
-				"title": "Open as Quick Pick",
-				"category": "Commands"
-			},
-			{
-				"command": "commands.selectAndRun",
-				"title": "Select and run command",
-				"category": "Commands"
-			},
-			{
-				"command": "commands.rerun",
-				"title": "Rerun last command",
-				"category": "Commands"
-			},
-			{
-				"command": "commands.suggestCommands",
-				"title": "Suggest (autocomplete) commands",
-				"category": "Commands"
-			},
-			{
-				"command": "commands.suggestCodicons",
-				"title": "Suggest (autocomplete) codicons",
-				"description": "Suggest [Codicons](https://code.visualstudio.com/api/references/icons-in-labels)",
-				"category": "Commands"
-			},
-			{
-				"command": "commands.suggestVariables",
-				"title": "Suggest (autocomplete) variables",
-				"description": "Suggest variables that are supported by this extension's variable substitutions, e.g: `${workspaceFolderBasename}`. [📚 Docs](https://github.com/usernamehw/vscode-commands/blob/master/docs/documentation.md#variable-substitution)",
-				"category": "Commands"
-			},
-			{
-				"command": "commands.suggestSettings",
-				"title": "Suggest (autocomplete) Settings",
-				"description": "Suggest setting ids (user & workspace).",
-				"category": "Commands"
-			},
-			{
-				"command": "commands.suggestColors",
-				"title": "Suggest (autocomplete) Colors",
-				"description": "Suggest theme color ids [theme-color](https://code.visualstudio.com/api/references/theme-color).",
-				"category": "Commands"
-			},
-			{
-				"command": "commands.newCommand",
-				"title": "Add new command to the list",
-				"icon": "$(add)",
-				"category": "Commands"
-			},
-			{
-				"command": "commands.deleteCommand",
-				"title": "Delete command",
-				"icon": "$(trash)",
-				"category": "Commands"
-			},
-			{
-				"command": "commands.newFolder",
-				"title": "New Folder",
-				"icon": "$(new-folder)",
-				"category": "Commands"
-			},
-			{
-				"command": "commands.newCommandInFolder",
-				"title": "Add new command to this folder",
-				"icon": "$(add)",
-				"category": "Commands"
-			},
-			{
-				"command": "commands.newFolderInFolder",
-				"title": "Add new folder inside this folder",
-				"icon": "$(new-folder)",
-				"category": "Commands"
-			},
-			{
-				"command": "commands.revealCommand",
-				"title": "Reveal in settings.json",
-				"category": "Commands"
-			},
-			{
-				"command": "commands.assignKeybinding",
-				"title": "Assign Keybinding",
-				"category": "Commands"
-			},
-			{
-				"command": "commands.addToStatusBar",
-				"title": "Toggle Status Bar Item",
-				"category": "Commands"
-			},
-			{
-				"command": "commands.revealCommandsInSettignsGUI",
-				"title": "Open Settings GUI",
-				"icon": "$(gear)",
-				"category": "Commands"
-			},
-			{
-				"command": "commands.escapeCommandUriArgument",
-				"title": "Escape command uri argument",
-				"category": "Commands"
-			},
-			{
-				"command": "commands.run",
-				"title": "Run custom command",
-				"category": "Commands"
-			}
-		],
-		"menus": {
-			"view/title": [
-				{
-					"command": "commands.revealCommandsInSettignsGUI",
-					"group": "navigation@3",
-					"when": "view == commands.tree"
-				},
-				{
-					"command": "commands.newCommand",
-					"group": "navigation@1",
-					"when": "view == commands.tree"
-				},
-				{
-					"command": "commands.newFolder",
-					"group": "navigation@2",
-					"when": "view == commands.tree"
-				}
-			],
-			"view/item/context": [
-				{
-					"command": "commands.revealCommand",
-					"when": "view == commands.tree && viewItem =~ /command|folder|stringCommand/",
-					"group": "1_reveal"
-				},
-				{
-					"command": "commands.addToStatusBar",
-					"when": "view == commands.tree && viewItem =~ /command|folder/",
-					"group": "2_status"
-				},
-				{
-					"command": "commands.assignKeybinding",
-					"when": "view == commands.tree && viewItem =~ /command|stringCommand|folder/",
-					"group": "3_keybinding"
-				},
-				{
-					"command": "commands.deleteCommand",
-					"when": "view == commands.tree && viewItem =~ /command|stringCommand/",
-					"group": "4_delete"
-				},
-				{
-					"command": "commands.newFolderInFolder",
-					"when": "view == commands.tree && viewItem == folder",
-					"group": "inline"
-				},
-				{
-					"command": "commands.newCommandInFolder",
-					"when": "view == commands.tree && viewItem == folder",
-					"group": "inline"
-				}
-			],
-			"commandPalette": [
-				{
-					"command": "commands.revealCommand",
-					"when": "false"
-				},
-				{
-					"command": "commands.assignKeybinding",
-					"when": "false"
-				},
-				{
-					"command": "commands.addToStatusBar",
-					"when": "false"
-				},
-				{
-					"command": "commands.revealCommandsInSettignsGUI",
-					"when": "false"
-				},
-				{
-					"command": "commands.newCommandInFolder",
-					"when": "false"
-				},
-				{
-					"command": "commands.newFolderInFolder",
-					"when": "false"
-				},
-				{
-					"command": "commands.newFolder",
-					"when": "false"
-				},
-				{
-					"command": "commands.deleteCommand",
-					"when": "false"
-				},
-				{
-					"command": "commands.run",
-					"when": "false"
-				}
-			]
-		},
-		"jsonValidation": [
-			{
-				"fileMatch": "**/keybindings.json",
-				"url": "./data/keybindings.schema.json"
-			},
-			{
-				"fileMatch": "**/settings.json",
-				"url": "./data/settings.schema.json"
-			}
-		]
-	},
-	"scripts": {
-		"vscode:prepublish": "webpack --mode production --color && npm run package-web",
-		"watch": "webpack --mode development --watch --stats minimal",
-		"watch-web": "webpack --mode development --watch --config web.webpack.config.js",
-		"package-web": "webpack --mode production --devtool hidden-source-map --config web.webpack.config.js"
-	},
-	"devDependencies": {
-		"@soda/friendly-errors-webpack-plugin": "^1.8.1",
-		"@types/lodash": "^4.14.195",
-		"@types/node": "^14.18.48",
-		"@types/vscode": "^1.55.0",
-		"@typescript-eslint/eslint-plugin": "^5.59.7",
-		"@typescript-eslint/parser": "^5.59.7",
-		"eslint": "^8.41.0",
-		"null-loader": "^4.0.1",
-		"os-browserify": "^0.3.0",
-		"path-browserify": "^1.0.1",
-		"process": "^0.11.10",
-		"ts-loader": "^9.4.3",
-		"typescript": "^5.0.4",
-		"webpack": "^5.84.1",
-		"webpack-cli": "^5.1.1"
-	},
-	"dependencies": {
-		"jsonc-parser": "^3.2.0",
-		"lodash": "^4.17.21",
-		"open": "^8.4.2"
-	}
+  "name": "commands",
+  "displayName": "Commands",
+  "version": "1.13.0",
+  "description": "Run one/multiple commands with arguments from Tree View / Status Bar / Quick Pick.",
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "run",
+    "execute",
+    "multi",
+    "multiple",
+    "command",
+    "commands",
+    "args",
+    "arguments",
+    "tree view",
+    "status bar",
+    "keybinding",
+    "shortcut",
+    "macros",
+    "toggle setting",
+    "delay"
+  ],
+  "bugs": {
+    "url": "https://github.com/usernamehw/vscode-commands/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/usernamehw/vscode-commands"
+  },
+  "license": "MIT",
+  "qna": false,
+  "publisher": "usernamehw",
+  "main": "./dist/extension",
+  "browser": "./dist/web/extension",
+  "scripts": {
+    "build": "tsup src/index.ts --external vscode",
+    "dev": "nr build --watch",
+    "lint": "eslint .",
+    "pack": "vsce package --no-dependencies",
+    "publish": "vsce publish --no-dependencies",
+    "release": "bumpp && nr publish",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit",
+    "vscode:prepublish": "nr build"
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "commands.openAsQuickPick",
+        "title": "Open as Quick Pick",
+        "category": "Commands"
+      },
+      {
+        "command": "commands.selectAndRun",
+        "title": "Select and run command",
+        "category": "Commands"
+      },
+      {
+        "command": "commands.rerun",
+        "title": "Rerun last command",
+        "category": "Commands"
+      },
+      {
+        "command": "commands.suggestCommands",
+        "title": "Suggest (autocomplete) commands",
+        "category": "Commands"
+      },
+      {
+        "command": "commands.suggestCodicons",
+        "title": "Suggest (autocomplete) codicons",
+        "description": "Suggest [Codicons](https://code.visualstudio.com/api/references/icons-in-labels)",
+        "category": "Commands"
+      },
+      {
+        "command": "commands.suggestVariables",
+        "title": "Suggest (autocomplete) variables",
+        "description": "Suggest variables that are supported by this extension's variable substitutions, e.g: `${workspaceFolderBasename}`. [📚 Docs](https://github.com/usernamehw/vscode-commands/blob/master/docs/documentation.md#variable-substitution)",
+        "category": "Commands"
+      },
+      {
+        "command": "commands.suggestSettings",
+        "title": "Suggest (autocomplete) Settings",
+        "description": "Suggest setting ids (user & workspace).",
+        "category": "Commands"
+      },
+      {
+        "command": "commands.suggestColors",
+        "title": "Suggest (autocomplete) Colors",
+        "description": "Suggest theme color ids [theme-color](https://code.visualstudio.com/api/references/theme-color).",
+        "category": "Commands"
+      },
+      {
+        "command": "commands.newCommand",
+        "title": "Add new command to the list",
+        "icon": "$(add)",
+        "category": "Commands"
+      },
+      {
+        "command": "commands.deleteCommand",
+        "title": "Delete command",
+        "icon": "$(trash)",
+        "category": "Commands"
+      },
+      {
+        "command": "commands.newFolder",
+        "title": "New Folder",
+        "icon": "$(new-folder)",
+        "category": "Commands"
+      },
+      {
+        "command": "commands.newCommandInFolder",
+        "title": "Add new command to this folder",
+        "icon": "$(add)",
+        "category": "Commands"
+      },
+      {
+        "command": "commands.newFolderInFolder",
+        "title": "Add new folder inside this folder",
+        "icon": "$(new-folder)",
+        "category": "Commands"
+      },
+      {
+        "command": "commands.revealCommand",
+        "title": "Reveal in settings.json",
+        "category": "Commands"
+      },
+      {
+        "command": "commands.assignKeybinding",
+        "title": "Assign Keybinding",
+        "category": "Commands"
+      },
+      {
+        "command": "commands.addToStatusBar",
+        "title": "Toggle Status Bar Item",
+        "category": "Commands"
+      },
+      {
+        "command": "commands.revealCommandsInSettignsGUI",
+        "title": "Open Settings GUI",
+        "icon": "$(gear)",
+        "category": "Commands"
+      },
+      {
+        "command": "commands.escapeCommandUriArgument",
+        "title": "Escape command uri argument",
+        "category": "Commands"
+      },
+      {
+        "command": "commands.run",
+        "title": "Run custom command",
+        "category": "Commands"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "Commands",
+      "properties": {
+        "commands.commands": {
+          "type": "object",
+          "description": "Main extension property. Commands that will be rendered in the View.",
+          "scope": "application",
+          "default": {}
+        },
+        "commands.workspaceCommands": {
+          "type": "object",
+          "description": "Commands that will be rendered in the View, specific to the workspace.",
+          "scope": "window",
+          "default": {}
+        },
+        "commands.alias": {
+          "type": "object",
+          "markdownDescription": "Use shorter command ids. Extension registers aliased commands so that they can be also used in keybindings.",
+          "default": {},
+          "patternProperties": {
+            "^.*$": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "commands.showKeybindings": {
+          "type": "boolean",
+          "markdownDescription": "Whether or not to show keyboard shortcuts assigned to command contributed by user. (Currently only displayed in Tree View).",
+          "default": false
+        },
+        "commands.treeViewCollapseFolders": {
+          "type": "boolean",
+          "description": "Collapse folders by default. Requires reload before being applied.",
+          "default": false
+        },
+        "commands.treeViewStatusBarVisibleSymbol": {
+          "type": "string",
+          "markdownDescription": "Symbol used in the tree view to indicate that command is also visible in the status bar.",
+          "default": "💠"
+        },
+        "commands.treeViewWorkspaceCommandSymbol": {
+          "type": "string",
+          "markdownDescription": "Symbol used in the tree view to indicate workspace command (from `#commands.workspaceCommands#`) setting.",
+          "default": "🎯"
+        },
+        "commands.statusBarDefaultText": {
+          "type": "string",
+          "enum": [
+            "pick",
+            "same"
+          ],
+          "default": "same",
+          "description": "Controls the text of Status Bar item when adding from Tree View context menu."
+        },
+        "commands.statusBarDefaultPosition": {
+          "type": "string",
+          "enum": [
+            "left",
+            "right"
+          ],
+          "default": "left",
+          "description": "Where to put command on Status Bar (left or right)."
+        },
+        "commands.quickPickIncludeAllCommands": {
+          "type": "boolean",
+          "markdownDescription": "When checked - include all commands from Command Palette to the Quick Pick.",
+          "default": false
+        },
+        "commands.populateCommandPalette": {
+          "type": "boolean",
+          "markdownDescription": "Adds all items to Command Palette (Requires editor reload after every change of main config `#commands.commands#`).",
+          "default": false
+        },
+        "commands.documentLinksEnabled": {
+          "type": "boolean",
+          "markdownDescription": "Run commands as links in documents. Links have format `@command?args@`.\n\n[issues/2](https://github.com/usernamehw/vscode-commands/issues/2)",
+          "default": false
+        },
+        "commands.documentLinksPattern": {
+          "type": "string",
+          "markdownDescription": "[Glob](https://code.visualstudio.com/api/references/vscode-api#GlobPattern) for `#commands.documentLinksEnabled#`. Example: `**/*.{ts,js}` - only enable in TypeScript & JavaScript files.",
+          "default": ""
+        },
+        "commands.variableSubstitutionEnabled": {
+          "type": "boolean",
+          "markdownDescription": "Allow `\"args\"` to replace variables: [📚 Docs](https://github.com/usernamehw/vscode-commands/blob/master/docs/documentation.md#variable-substitution).",
+          "default": true
+        },
+        "commands.toggleSettings.showNotification": {
+          "type": "boolean",
+          "markdownDescription": "When enabled - show notification after using `commands.toggleSetting` or `commands.incrementSetting`.",
+          "default": false
+        }
+      }
+    },
+    "jsonValidation": [
+      {
+        "fileMatch": "**/keybindings.json",
+        "url": "./data/keybindings.schema.json"
+      },
+      {
+        "fileMatch": "**/settings.json",
+        "url": "./data/settings.schema.json"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "commands.revealCommandsInSettignsGUI",
+          "group": "navigation@3",
+          "when": "view == commands.tree"
+        },
+        {
+          "command": "commands.newCommand",
+          "group": "navigation@1",
+          "when": "view == commands.tree"
+        },
+        {
+          "command": "commands.newFolder",
+          "group": "navigation@2",
+          "when": "view == commands.tree"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "commands.revealCommand",
+          "when": "view == commands.tree && viewItem =~ /command|folder|stringCommand/",
+          "group": "1_reveal"
+        },
+        {
+          "command": "commands.addToStatusBar",
+          "when": "view == commands.tree && viewItem =~ /command|folder/",
+          "group": "2_status"
+        },
+        {
+          "command": "commands.assignKeybinding",
+          "when": "view == commands.tree && viewItem =~ /command|stringCommand|folder/",
+          "group": "3_keybinding"
+        },
+        {
+          "command": "commands.deleteCommand",
+          "when": "view == commands.tree && viewItem =~ /command|stringCommand/",
+          "group": "4_delete"
+        },
+        {
+          "command": "commands.newFolderInFolder",
+          "when": "view == commands.tree && viewItem == folder",
+          "group": "inline"
+        },
+        {
+          "command": "commands.newCommandInFolder",
+          "when": "view == commands.tree && viewItem == folder",
+          "group": "inline"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "commands.revealCommand",
+          "when": "false"
+        },
+        {
+          "command": "commands.assignKeybinding",
+          "when": "false"
+        },
+        {
+          "command": "commands.addToStatusBar",
+          "when": "false"
+        },
+        {
+          "command": "commands.revealCommandsInSettignsGUI",
+          "when": "false"
+        },
+        {
+          "command": "commands.newCommandInFolder",
+          "when": "false"
+        },
+        {
+          "command": "commands.newFolderInFolder",
+          "when": "false"
+        },
+        {
+          "command": "commands.newFolder",
+          "when": "false"
+        },
+        {
+          "command": "commands.deleteCommand",
+          "when": "false"
+        },
+        {
+          "command": "commands.run",
+          "when": "false"
+        }
+      ]
+    },
+    "views": {
+      "commands": [
+        {
+          "id": "commands.tree",
+          "name": "View"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "commands",
+          "icon": "$(play-circle)",
+          "title": "Commands"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "commands.tree",
+        "contents": "No commands defined in \"commands.commands\".\n\n[New Command](command:commands.newCommand)",
+        "when": "commands:emptyCommands"
+      }
+    ]
+  },
+  "activationEvents": [
+    "onStartupFinished",
+    "onFileSystem:commandsExtension"
+  ],
+  "dependencies": {
+    "jsonc-parser": "^3.2.1",
+    "lodash": "^4.17.21",
+    "open": "^10.0.3"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.202",
+    "@types/node": "^20.11.16",
+    "@types/vscode": "^1.86.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "esbuild": "^0.20.0",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-import-resolver-node": "^0.3.9",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-perfectionist": "^2.5.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
+    "eslint-plugin-unicorn": "^50.0.1",
+    "os-browserify": "^0.3.0",
+    "path-browserify": "^1.0.1",
+    "prettier": "^3.2.5",
+    "process": "^0.11.10",
+    "rimraf": "^5.0.5",
+    "tsup": "^8.0.1",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "vscode": "^1.86.0"
+  },
+  "icon": "img/icon.png",
+  "extensionKind": [
+    "workspace",
+    "ui"
+  ]
 }
